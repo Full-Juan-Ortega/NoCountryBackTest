@@ -1,6 +1,14 @@
 version: '2'
 
 services:
+  # Servicio para construir el JAR usando Maven
+  builder:
+    image: maven:3.8.4-openjdk-17
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: [ "mvn", "clean", "package", "-DskipTests" ]
+    # Servicio de la API Spring Boot
   app:
     image: 'demo-backend:0.0.1'
     ports:
@@ -9,12 +17,13 @@ services:
     container_name: app
     depends_on:
       - db
+      - builder
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
       - SPRING_DATASOURCE_USERNAME=compose-postgres
       - SPRING_DATASOURCE_PASSWORD=compose-postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
+  # Servicio de la base de datos PostgreSQL
   db:
     image: 'postgres:13.1-alpine'
     container_name: db
