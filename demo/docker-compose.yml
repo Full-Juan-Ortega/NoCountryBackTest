@@ -5,8 +5,7 @@ services:
     image: 'demo-backend:0.0.1'
     ports:
       - 8080:8080
-    build:
-      context: .
+    build: .
     container_name: app
     depends_on:
       - db
